@@ -1,0 +1,33 @@
+{
+  "name": "4ndr0ip",
+  "version": "3.0",
+  "manifest_version": 3,
+  "description": "Dynamically blocks IP grabbers and logging services.",
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "4ndr0ip",
+    "default_popup": "popup.html"
+  },
+  "icons": {
+    "128": "icon_128.png"
+  },
+  "permissions": [
+    "storage",
+    "alarms",
+    "declarativeNetRequest"
+  ],
+  "host_permissions": [
+    "https://raw.githubusercontent.com/"
+  ],
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "initial_ruleset",
+        "enabled": true,
+        "path": "rules.json"
+      }
+    ]
+  }
+}
