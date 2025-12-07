@@ -179,8 +179,33 @@
       "resourceTypes": ["main_frame", "sub_frame", "script", "xmlhttprequest", "ping", "websocket", "other"]
     }
   },
-
-  // ────── WEBRTC / STUN / TURN APOCALYPSE (2025) ──────
+  {
+    "id": 21,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||ipify.org/*",
+      "resourceTypes": ["main_frame", "sub_frame", "script", "xmlhttprequest", "ping", "websocket", "other"]
+    }
+  },
+  {
+    "id": 22,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||api.ipify.org",
+      "resourceTypes": ["main_frame", "sub_frame", "script", "xmlhttprequest", "ping", "websocket", "other"]
+    }
+  },
+  {
+    "id": 23,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||api64.ipify.org",
+      "resourceTypes": ["main_frame", "sub_frame", "script", "xmlhttprequest", "ping", "websocket", "other"]
+    }
+  },
   {
     "id": 100,
     "priority": 1,
