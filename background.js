@@ -1,22 +1,22 @@
-// 4ndr0ip Background – Leak Sentinel v3.1 (MV3 Pure)
-// No webRequest, no blocking, no errors — uses DNR + scripting
+// 4ndr0ip Background – MV3 Pure v3.2
+// No webRequest. No errors. Full power.
 
-const IP_REGEX = /(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)|(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|fe80:(?::[0-9a-fA-F]{1,4}){0,4}%[0-9a-zA-Z]+|fc00:(?::[0-9a-fA-F]{1,4}){0,6}/g;
+let leakLog = {}; // domain -> { ips: Set, count: number, ts: number }
 
-let leakLog = {};
-
-// Log leak from content script
+// Log leaks from content script
 chrome.runtime.onMessage.addListener((msg, sender) => {
-  if (msg.type === 'logLeak') {
-    const domain = sender.tab?.url ? new URL(sender.tab.url).hostname : 'unknown';
-    if (!leakLog[domain]) leakLog[domain] = { ips: new Set(), count: 0 };
-    msg.ips.forEach(ip => leakLog[domain].ips.add(ip));
-    leakLog[domain].count++;
-    chrome.storage.local.set({ leakLog });
+  if (msg.type !== 'logLeak') return;
+
+  const domain = sender.tab?.url ? new URL(sender.tab.url).hostname : 'unknown';
+  if (!leakLog[domain]) {
+    leakLog[domain] = { ips: new Set(), count: 0, ts: Date.now() };
   }
+  msg.ips?.forEach(ip => leakLog[domain].ips.add(ip));
+  leakLog[domain].count++;
+  chrome.storage.local.set({ leakLog });
 });
 
-// Optional: Trigger scan on popup button
+// Manual scan trigger from popup
 chrome.action.onClicked.addListener((tab) => {
   chrome.scripting.executeScript({
     target: { tabId: tab.id },
@@ -24,10 +24,27 @@ chrome.action.onClicked.addListener((tab) => {
   });
 });
 
-// Load DNR rules on startup
+// Load DNR rules on startup/install
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.declarativeNetRequest.updateDynamicRules({
-    removeRuleIds: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 100, 101, 102, 103, 104],
-    addRules: [] // Let rules.json handle it
-  });
+  console.log('4ndr0ip: Extension installed/updated – DNR rules loaded');
+});
+
+chrome.runtime.onStartup.addListener(() => {
+  console.log('4ndr0ip: Browser started – ready');
+});
+
+// Optional: Export logs on demand
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  if (msg.action === 'getLogs') {
+    chrome.storage.local.get(['leakLog'], (result) => {
+      sendResponse({ leakLog: result.leakLog || {} });
+    });
+    return true; // async response
+  }
+  if (msg.action === 'clearLogs') {
+    leakLog = {};
+    chrome.storage.local.clear();
+    sendResponse({ status: 'cleared' });
+    return true;
+  }
 });
