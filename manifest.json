@@ -1,8 +1,8 @@
 {
   "name": "4ndr0ip",
-  "version": "3.0",
+  "version": "3.1",
   "manifest_version": 3,
-  "description": "Dynamically blocks IP grabbers and logging services.",
+  "description": "Dynamically blocks IP grabbers and logs WebRTC leaks.",
   "background": {
     "service_worker": "background.js"
   },
@@ -10,22 +10,20 @@
     "default_title": "4ndr0ip",
     "default_popup": "popup.html"
   },
-  "icons": {},
   "permissions": [
     "storage",
-    "alarms",
+    "scripting",
     "declarativeNetRequest"
   ],
   "host_permissions": [
-    "https://raw.githubusercontent.com/"
+    "<all_urls>"
   ],
   "declarative_net_request": {
-    "rule_resources": [
-      {
-        "id": "initial_ruleset",
-        "enabled": true,
-        "path": "rules.json"
-      }
-    ]
-  }
+    "rule_resources": [{
+      "id": "initial_ruleset",
+      "enabled": true,
+      "path": "rules.json"
+    }]
+  },
+  "icons": { "128": "icon_128.png" }
 }
