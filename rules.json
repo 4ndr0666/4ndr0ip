@@ -131,7 +131,7 @@
     "action": { "type": "block" },
     "condition": {
       "urlFilter": "||ps3cfw.com/*",
-      "resourceTypes": ["main_frame", "48", "script", "xmlhttprequest", "ping", "websocket", "other"]
+      "resourceTypes": ["main_frame", "sub_frame", "script", "xmlhttprequest", "ping", "websocket", "other"]
     }
   },
   {
