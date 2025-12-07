@@ -41,12 +41,40 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     chrome.storage.local.get(['leakLog'], (result) => {
       sendResponse({ leakLog: result.leakLog || {} });
     });
-    return true;
+    return true; // Keep the message channel open for the asynchronous response
   }
   if (msg.action === 'clearLogs') {
     leakLog = {};
-    chrome.storage.local.clear();
+    chrome.storage.local.clear(); // Use clear() to remove all items
     sendResponse({ status: 'cleared' });
-    return true;
+    return true; // Acknowledge receipt
+  }
+  return false; // No action taken, close the channel
+});
+
+// Disable WebRTC to prevent IP leaks
+function disableWebRTC() {
+  chrome.privacy.network.webRTCIPHandlingPolicy.set({
+    value: 'disable_non_proxied_udp'
+  }, () => {
+    if (chrome.runtime.lastError) {
+      console.error('Error setting WebRTC policy:', chrome.runtime.lastError.message);
+    } else {
+      console.log('WebRTC IP handling policy set to disable non-proxied UDP.');
+    }
+  });
+}
+
+// Set the policy on startup
+chrome.runtime.onStartup.addListener(() => {
+  console.log('4ndr0ip: Ready');
+  disableWebRTC();
+});
+
+// Also set the policy on initial installation or update
+chrome.runtime.onInstalled.addListener((details) => {
+  console.log('4ndr0ip: Installed/updated – DNR rules loaded');
+  if (details.reason === 'install' || details.reason === 'update') {
+    disableWebRTC();
   }
 });

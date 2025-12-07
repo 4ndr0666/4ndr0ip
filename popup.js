@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const logPanel = document.getElementById('log-panel');
   const logList = document.getElementById('log-list');
 
+  const clearBtn = document.getElementById('clear-btn');
+
   // Scan trigger
   scanBtn.onclick = () => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -27,6 +29,12 @@ document.addEventListener('DOMContentLoaded', () => {
     chrome.runtime.sendMessage({ action: 'exportLogs' });
   };
 
+  // Clear logs
+  clearBtn.onclick = () => {
+    chrome.runtime.sendMessage({ action: 'clearLogs' });
+    logList.innerHTML = '<li>Logs cleared</li>';
+  };
+
   // Toggle logs
   logBtn.onclick = () => {
     logPanel.style.display = logPanel.style.display === 'none' ? 'block' : 'none';
@@ -35,9 +43,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function loadLogs() {
     const response = await chrome.runtime.sendMessage({ action: 'getLogs' });
-    logList.innerHTML = Object.entries(response.logs).map(([url, data]) => 
-      `<li>${url}: ${data.ips.join(', ')} (${data.type})</li>`
-    ).join('') || '<li>No leaks logged</li>';
+    if (response && response.logs) {
+      logList.innerHTML = Object.entries(response.logs).map(([url, data]) => 
+        `<li>${url}: ${data.ips.join(', ')} (${data.type})</li>`
+      ).join('') || '<li>No leaks logged</li>';
+    } else {
+      logList.innerHTML = '<li>No leaks logged</li>';
+    }
   }
 
   // Init
