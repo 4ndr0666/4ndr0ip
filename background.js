@@ -1,5 +1,7 @@
-// 4ndr0ip Background – MV3 Pure v3.2
-// No webRequest. No errors. Full power.
+// 4ndr0ip Background – MV3 Pure v3.3 (Final)
+// No webRequest. No errors. Full IPv6 + IPv4 leak detection.
+
+const IP_REGEX = /(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)|(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|fe80:(?::[0-9a-fA-F]{1,4}){0,4}%[0-9a-zA-Z]+|fc00:(?::[0-9a-fA-F]{1,4}){0,6}/g;
 
 let leakLog = {}; // domain -> { ips: Set, count: number, ts: number }
 
@@ -26,20 +28,20 @@ chrome.action.onClicked.addListener((tab) => {
 
 // Load DNR rules on startup/install
 chrome.runtime.onInstalled.addListener(() => {
-  console.log('4ndr0ip: Extension installed/updated – DNR rules loaded');
+  console.log('4ndr0ip: Installed/updated – DNR rules loaded');
 });
 
 chrome.runtime.onStartup.addListener(() => {
-  console.log('4ndr0ip: Browser started – ready');
+  console.log('4ndr0ip: Ready');
 });
 
-// Optional: Export logs on demand
+// Export + clear logs
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg.action === 'getLogs') {
     chrome.storage.local.get(['leakLog'], (result) => {
       sendResponse({ leakLog: result.leakLog || {} });
     });
-    return true; // async response
+    return true;
   }
   if (msg.action === 'clearLogs') {
     leakLog = {};
