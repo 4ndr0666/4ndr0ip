@@ -1,28 +1,31 @@
 {
-  "manifest_version": 3,
   "name": "4ndr0ip",
-  "version": "1.0.0",
-  "description": "Detects and logs potential IP leaks via WebRTC/STUN/TURN",
-  "permissions": [
-    "storage",
-    "activeTab",
-    "scripting"
-  ],
-  "host_permissions": [
-    "<all_urls>"
-  ],
+  "version": "3.0",
+  "manifest_version": 3,
+  "description": "Dynamically blocks IP grabbers and logging services.",
   "background": {
     "service_worker": "background.js"
   },
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["content.js"],
-      "run_at": "document_start",
-      "world": "MAIN"
-    }
-  ],
   "action": {
+    "default_title": "4ndr0ip",
     "default_popup": "popup.html"
+  },
+  "icons": {},
+  "permissions": [
+    "storage",
+    "alarms",
+    "declarativeNetRequest"
+  ],
+  "host_permissions": [
+    "https://raw.githubusercontent.com/"
+  ],
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "initial_ruleset",
+        "enabled": true,
+        "path": "rules.json"
+      }
+    ]
   }
 }
