@@ -1,13 +1,12 @@
 {
   "manifest_version": 3,
   "name": "4ndr0ip",
-  "version": "1.1.0",
-  "description": "IP leak sentinel – WebRTC/STUN/TURN hunter for red-team recon.",
+  "version": "1.0.0",
+  "description": "Detects and logs potential IP leaks via WebRTC/STUN/TURN",
   "permissions": [
     "storage",
-    "scripting",
     "activeTab",
-    "declarativeNetRequest"
+    "scripting"
   ],
   "host_permissions": [
     "<all_urls>"
@@ -24,18 +23,16 @@
     }
   ],
   "action": {
-    "default_popup": "popup.html"
-  },
-  "declarative_net_request": {
-    "rule_resources": [{
-      "id": "ip_block_rules",
-      "enabled": true,
-      "path": "rules.json"
-    }]
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
+    }
   },
   "icons": {
-    "16": "icon16.png",
-    "48": "icon48.png",
-    "128": "icon128.png"
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
   }
 }
